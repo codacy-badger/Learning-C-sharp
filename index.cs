@@ -1,12 +1,13 @@
 ﻿using System;
 
-namespace HolaMundo
+namespace app
 {
     class Program
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("¡Hola mundo!");
+            Menu menu = Menu.getInstance;
+            menu.menuOptions();
             Console.ReadKey();
         }
     }
