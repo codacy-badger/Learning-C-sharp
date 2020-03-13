@@ -2,17 +2,17 @@
 
 namespace app
 {
-    internal class Menu
+    internal class Menu : MenuInterface
     {
-        private readonly static Menu _instance = new Menu(
-            ProgramVentas.getInstance
-        );
         private ProgramVentas ProgramVentas;
-        private Menu(ProgramVentas programVentas) {
-            ProgramVentas = programVentas;
+        private readonly static Menu _instance = new Menu();
+
+        private Menu()
+        {
+            ProgramVentas = new ProgramVentas(new ModelVenta());
         }
 
-        public static Menu getInstance
+        public static Menu Instance
         {
             get
             {
@@ -30,10 +30,9 @@ namespace app
             {
                 case "1":
                     ProgramVentas.run();
-                    menuOptions();
                     break;
                 default:
-                    Console.WriteLine("El valor ingresado no es válido");
+                    Environment.Exit(1);
                     break;
             }
         }

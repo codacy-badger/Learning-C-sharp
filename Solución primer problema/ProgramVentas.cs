@@ -4,24 +4,13 @@ namespace app
 {
     class ProgramVentas : program
     {
-        private readonly static ProgramVentas _instance = new ProgramVentas(
-            ModelVenta.getInstance
-        );
         private string _name;
         private ModelVenta Model;
 
-        private ProgramVentas(ModelVenta model)
+        public ProgramVentas ( ModelVenta model)
         {
-            Model = model;
+            this.Model = model;
             _name = "ventas diarias de una tienda";
-        }
-
-        public static ProgramVentas getInstance
-        {
-            get
-            {
-                return _instance;
-            }
         }
 
         public string name
@@ -47,8 +36,47 @@ namespace app
 
         public void run()
         {
+            Menu Menu = Menu.Instance;
             add();
-            questionUsuario();
+            Console.WriteLine(Model.calculateTotal());
+
+            Console.WriteLine("¿QUIERE SEGUIR REGISTRANDO VENTAS?, ESCRIBA si PARA CONTINUAR, SINO ESCRIBA CUALQUIER TECLA...");
+            string terminar = Console.ReadLine();
+            terminar.ToLower();
+
+            if (terminar == "si")
+            {
+                run();
+            }
+
+            Console.WriteLine("¿QUIERE VER EL MONTO FINAL?");
+            string flagVerMontoFinal = Console.ReadLine();
+            flagVerMontoFinal.ToLower();
+
+            if (flagVerMontoFinal == "si")
+            {
+                calculateTotal();
+            }
+
+            Console.WriteLine("¿DESEA VOLVER AL MENÚ PRINCIPAL?, PRECIONE 1...");
+            Console.WriteLine("¿DESEA VOLVER A EJECUTAR EL ALGORITMO DESDE CERO?, PRECIONE 2...?");
+            Console.WriteLine("¿DESEA SALIR DEL PROGRAMA?, PRECIONE CUALQUIER TECLA");
+
+            string selOpcion = Console.ReadLine();
+
+            switch (selOpcion)
+            {
+                case "1":
+                    Menu.menuOptions();
+                    break;
+                case "2":
+                    Model.resetVentas();
+                    run();
+                    break;
+                default:
+                    Environment.Exit(1);
+                    break;
+            }
         }
 
         void calculateTotal()
@@ -66,38 +94,6 @@ namespace app
                 }
             }
             Console.WriteLine($"Valor total ventas: {Model.calculateTotal()}");
-        }
-
-        void questionUsuario()
-        {
-            Console.WriteLine("Venta agragada, ¿desea agregar otra venta o regresar al menú?");
-            Console.WriteLine("presione '1' para terminar y volver al menú principal");
-            Console.WriteLine("presione '2' para agregar nueva venta");
-            Console.WriteLine("presione '3' para ejecutar desde cero");
-            Console.WriteLine("presione '4' para salir");
-
-            string respuesta = Console.ReadLine();
-
-            switch(respuesta)
-            {
-                case "1":
-                    calculateTotal();
-                    break;
-                case "2":
-                    run();
-                    break;
-                case "3":
-                    Model.resetVentas();
-                    run();
-                    break;
-                case "4":
-                    Environment.Exit(1);
-                    break;
-                default:
-                    Console.WriteLine("El número ingresado es inválido");
-                    questionUsuario();
-                    break;
-            }
         }
     }
 }

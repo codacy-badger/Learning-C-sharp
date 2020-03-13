@@ -5,17 +5,7 @@ namespace app
     internal class ModelVenta
     {
         private Venta[] ventas = new Venta[50];
-        private int counter = 0;
-        private readonly static ModelVenta _instance = new ModelVenta();
-        private ModelVenta() { }
-
-        public static ModelVenta getInstance
-        {
-            get
-            {
-                return _instance;
-            }
-        }
+        private int count = 0;
 
         public void add(string descripcion, double valor, float cantidad)
         {
@@ -23,8 +13,8 @@ namespace app
             venta.setDescripcion(descripcion);
             venta.setValor(valor);
             venta.setCantidad(cantidad);
-            ventas[counter] = venta;
-            counter++;
+            ventas[count] = venta;
+            count += 1;
         }
 
         public double calculateTotal()

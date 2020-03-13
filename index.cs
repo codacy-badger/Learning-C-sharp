@@ -6,7 +6,7 @@ namespace app
     {
         static void Main(string[] args)
         {
-            Menu menu = Menu.getInstance;
+            Menu menu = Menu.Instance;
             menu.menuOptions();
             Console.ReadKey();
         }
