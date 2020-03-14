@@ -1,99 +1,126 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace app
 {
     class ProgramVentas : program
     {
-        private string _name;
         private ModelVenta Model;
 
         public ProgramVentas ( ModelVenta model)
         {
             this.Model = model;
-            _name = "ventas diarias de una tienda";
         }
 
-        public string name
+        private void add()
         {
-            get => _name;
-            set => _name = value;
-        }
-
-
-        void add()
-        {
-            Console.WriteLine("Ingrese la descripción de la venta:");
-            string descripcion = Console.ReadLine();
-
             Console.WriteLine("Ingrese el Valor unitario:");
             double valor = double.Parse(Console.ReadLine());
 
             Console.WriteLine("Ingrese la cantidad:");
             float cantidad = float.Parse(Console.ReadLine());
 
-            Model.add(descripcion, valor, cantidad);
+            Model.addVenta(valor, cantidad);
         }
 
         public void run()
         {
-            Menu Menu = Menu.Instance;
             add();
-            Console.WriteLine(Model.calculateTotal());
+            Utlis.writeInColor(Model.getTotalVentas().ToString(), "Blue");
+            preguntaDarPorServidoAlCliente();
+            preguntaSeguirRegistrandoVentas();
+            printClientes();
+        }
 
-            Console.WriteLine("¿QUIERE SEGUIR REGISTRANDO VENTAS?, ESCRIBA si PARA CONTINUAR, SINO ESCRIBA CUALQUIER TECLA...");
-            string terminar = Console.ReadLine();
-            terminar.ToLower();
+        private void preguntaDarPorServidoAlCliente()
+        {
+            Utlis.writeInColor("¿Desea dar por servido el cliente?,s para afirmar, sino n.", "");
+            string flagCliente = Console.ReadLine().ToLower();
 
-            if (terminar == "si")
-            {
+            if (flagCliente == "s") {
+                Model.addCliente(Model.getTotalVentas());
+                Model.resetVentas();
+            }
+            else if (flagCliente == "n"){ 
+                run(); 
+            } else {
+                Utlis.userError();
+                preguntaDarPorServidoAlCliente();
+            }
+        }
+        
+        private void preguntaSeguirRegistrandoVentas()
+        {
+            Utlis.writeInColor("¿Quiere seguir registrando ventas?,s para continuar, sino n.", "");
+            string flagRegistrarMasVentas = Console.ReadLine().ToLower();
+
+            if (flagRegistrarMasVentas == "s") {
                 run();
+
+            } else if (flagRegistrarMasVentas == "n") {
+                noSeguirResgitrandoVentas();
+
+            } else {
+                Utlis.userError();
+                preguntaSeguirRegistrandoVentas();
             }
+        }
 
-            Console.WriteLine("¿QUIERE VER EL MONTO FINAL?");
-            string flagVerMontoFinal = Console.ReadLine();
-            flagVerMontoFinal.ToLower();
+        private void noSeguirResgitrandoVentas()
+        {
+            Utlis.writeInColor("¿Quiere ver el monto final?,s para aceptar, sino n.", "");
+            string flagVerMontoFinal = Console.ReadLine().ToLower();
 
-            if (flagVerMontoFinal == "si")
+            if (flagVerMontoFinal == "s")
             {
-                calculateTotal();
+                Utlis.writeInColor($"Valor total ventas: {Model.calculateTotal()}", "Red");
+            } else if (flagVerMontoFinal == "n") {
+                noMostrarMontoFinal();
+            } else {
+                Utlis.userError();
+                noSeguirResgitrandoVentas();
             }
+        }
 
-            Console.WriteLine("¿DESEA VOLVER AL MENÚ PRINCIPAL?, PRECIONE 1...");
-            Console.WriteLine("¿DESEA VOLVER A EJECUTAR EL ALGORITMO DESDE CERO?, PRECIONE 2...?");
-            Console.WriteLine("¿DESEA SALIR DEL PROGRAMA?, PRECIONE CUALQUIER TECLA");
+        private void noMostrarMontoFinal()
+        {
+            Console.WriteLine("¿Desea volver al menú principal?, PRESIONE 1");
+            Console.WriteLine("¿Desea volver a ejecutar el algoritmo desde cero?, PRESIONE 2");
+            Console.WriteLine("¿Desea salir del programa?, PRESIONE 0");
 
             string selOpcion = Console.ReadLine();
 
             switch (selOpcion)
             {
                 case "1":
-                    Menu.menuOptions();
-                    break;
+                    return;
                 case "2":
                     Model.resetVentas();
+                    Model.resetClientes();
                     run();
                     break;
-                default:
+                case "0":
                     Environment.Exit(1);
+                    break;
+                default:
+                    Utlis.userError();
+                    noMostrarMontoFinal();
                     break;
             }
         }
 
-        void calculateTotal()
+        private void printClientes()
         {
-            Venta[] ventas = Model.getVentas();
-            for(int i = 0; i <= Model.getTopeVentas(); i++)
+            List<Cliente> clientes = Model.getClientes();
+            int cliente = 0;
+
+            foreach (Cliente element in clientes)
             {
-                Venta venta = ventas[i];
-                if(venta != null)
-                {
-                    Console.WriteLine($"Descripción: {venta.getDescripcion()}");
-                    Console.WriteLine($"valor: {venta.getValor()}");
-                    Console.WriteLine($"cantidad: {venta.getCantidad()}");
-                    Console.WriteLine($"total: {venta.getTotal()}");
-                }
+                cliente += 1;
+                Console.WriteLine($"La compra total del cliente {cliente} es {element._MontoTotal}");
             }
-            Console.WriteLine($"Valor total ventas: {Model.calculateTotal()}");
+
+            Console.WriteLine($"En número de clientes atendidos es {clientes.Count}.");
         }
     }
 }

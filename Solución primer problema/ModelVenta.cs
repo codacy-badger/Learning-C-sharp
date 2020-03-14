@@ -1,48 +1,67 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace app
 {
     internal class ModelVenta
     {
-        private Venta[] ventas = new Venta[50];
-        private int count = 0;
+        private List<Venta> ventas = new List<Venta>();
+        private List<Cliente> clientes = new List<Cliente>();
 
-        public void add(string descripcion, double valor, float cantidad)
+        public void addVenta(double valor, float cantidad)
         {
             Venta venta = new Venta();
-            venta.setDescripcion(descripcion);
-            venta.setValor(valor);
-            venta.setCantidad(cantidad);
-            ventas[count] = venta;
-            count += 1;
+            venta.Valor = valor;
+            venta.Cantidad = cantidad;
+            ventas.Add(venta);
+        }
+
+        public void addCliente(double montoTotal)
+        {
+            Cliente cliente = new Cliente(montoTotal);
+            clientes.Add(cliente);
         }
 
         public double calculateTotal()
         {
-            double totalVentas = 0;
-            for(int i = 0; i <= getTopeVentas(); i++)
+            double montoTotal = 0;
+
+            foreach (Cliente element in clientes)
             {
-                if (ventas[i] != null)
-                {
-                    totalVentas += ventas[i].getTotal();
-                }
+                montoTotal += element._MontoTotal;
             }
-            return totalVentas;
+            return montoTotal;
         }
 
-        public Venta[] getVentas()
+        public List<Venta> getVentas()
         {
             return ventas;
         }
 
-        public int getTopeVentas()
+        public double getTotalVentas()
         {
-            return ventas.Length - 1;
+            double montoTotal = 0;
+
+            foreach (Venta element in ventas)
+            {
+                montoTotal += element.getTotal();
+            }
+            return montoTotal;
+        }
+
+        public List<Cliente> getClientes()
+        {
+            return clientes;
         }
 
         public void resetVentas()
         {
-            Array.Clear(ventas, 0, ventas.Length);
+            ventas.Clear();
+        }
+
+        public void resetClientes()
+        {
+            clientes.Clear();
         }
     }
 }
