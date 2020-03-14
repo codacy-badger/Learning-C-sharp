@@ -3,13 +3,15 @@ using System.Collections.Generic;
 
 namespace app
 {
-    class ProgramVentas : program
+    class ProgramVentas : programInterface
     {
-        private ModelVenta Model;
+        private LogicVenta LogicVenta;
+        private LogicCompraDelCliente LogicCompraDelCliente;
 
-        public ProgramVentas ( ModelVenta model)
+        public ProgramVentas ( LogicVenta logicVenta, LogicCompraDelCliente logicCompraDelCliente)
         {
-            this.Model = model;
+            this.LogicVenta = logicVenta;
+            this.LogicCompraDelCliente = logicCompraDelCliente;
         }
 
         private void add()
@@ -20,107 +22,126 @@ namespace app
             Console.WriteLine("Ingrese la cantidad:");
             float cantidad = float.Parse(Console.ReadLine());
 
-            Model.addVenta(valor, cantidad);
+            this.LogicVenta.add(valor, cantidad);
         }
 
         public void run()
         {
+            Console.Clear();
+
             add();
-            Utlis.writeInColor(Model.getTotalVentas().ToString(), "Blue");
-            preguntaDarPorServidoAlCliente();
+
+            Console.Clear();
+
+            Utilities.escribeEnColor(this.LogicVenta.getTotal().ToString(), "Azul");
+            preguntaTerminarCompraDelCliente();
+
+            Console.Clear();
+
             preguntaSeguirRegistrandoVentas();
-            printClientes();
+
+            imprimeMontoClientes();
+            preguntaQueHacer();
         }
 
-        private void preguntaDarPorServidoAlCliente()
+        private void preguntaTerminarCompraDelCliente()
         {
-            Utlis.writeInColor("¿Desea dar por servido el cliente?,s para afirmar, sino n.", "");
+            Utilities.escribeEnColor("¿Desea terminar la compra del cliente?,s para afirmar, sino n.", "");
             string flagCliente = Console.ReadLine().ToLower();
 
-            if (flagCliente == "s") {
-                Model.addCliente(Model.getTotalVentas());
-                Model.resetVentas();
-            }
-            else if (flagCliente == "n"){ 
-                run(); 
-            } else {
-                Utlis.userError();
-                preguntaDarPorServidoAlCliente();
+            switch (flagCliente)
+            {
+                case "s":
+                    this.LogicCompraDelCliente.add(
+                        this.LogicVenta.getTotal()
+                    );
+                    LogicVenta.reset();
+                    break;
+                case "n":
+                    run();
+                    break;
+                default:
+                    Utilities.userError();
+                    preguntaTerminarCompraDelCliente();
+                    break;
             }
         }
         
         private void preguntaSeguirRegistrandoVentas()
         {
-            Utlis.writeInColor("¿Quiere seguir registrando ventas?,s para continuar, sino n.", "");
+            Utilities.escribeEnColor("¿Quiere seguir registrando ventas?,s para continuar, sino n.", "");
             string flagRegistrarMasVentas = Console.ReadLine().ToLower();
 
-            if (flagRegistrarMasVentas == "s") {
-                run();
-
-            } else if (flagRegistrarMasVentas == "n") {
-                noSeguirResgitrandoVentas();
-
-            } else {
-                Utlis.userError();
-                preguntaSeguirRegistrandoVentas();
+            switch(flagRegistrarMasVentas)
+            {
+                case "s":
+                    run();
+                    break;
+                case "n":
+                    noSeguirResgitrandoVentas();
+                    break;
+                default:
+                    Utilities.userError();
+                    preguntaSeguirRegistrandoVentas();
+                    break;
             }
         }
 
         private void noSeguirResgitrandoVentas()
         {
-            Utlis.writeInColor("¿Quiere ver el monto final?,s para aceptar, sino n.", "");
+            Utilities.escribeEnColor("¿Quiere ver el monto final?,s para aceptar, sino n.", "");
             string flagVerMontoFinal = Console.ReadLine().ToLower();
 
-            if (flagVerMontoFinal == "s")
+            switch(flagVerMontoFinal)
             {
-                Utlis.writeInColor($"Valor total ventas: {Model.calculateTotal()}", "Red");
-            } else if (flagVerMontoFinal == "n") {
-                noMostrarMontoFinal();
-            } else {
-                Utlis.userError();
-                noSeguirResgitrandoVentas();
+                case "s":
+                    Utilities.escribeEnColor($"Valor total ventas: {LogicCompraDelCliente.calculateTotal()}", "Rojo");
+                    break;
+                case "n":
+                    break;
+                default:
+                    Utilities.userError();
+                    noSeguirResgitrandoVentas();
+                    break;
             }
         }
 
-        private void noMostrarMontoFinal()
+        private void preguntaQueHacer()
         {
-            Console.WriteLine("¿Desea volver al menú principal?, PRESIONE 1");
-            Console.WriteLine("¿Desea volver a ejecutar el algoritmo desde cero?, PRESIONE 2");
-            Console.WriteLine("¿Desea salir del programa?, PRESIONE 0");
+            Utilities.escribeEnColor("¿Desea volver al menú principal?, PRESIONE 1", "Rojo");
+            Utilities.escribeEnColor("¿Desea volver a ejecutar el algoritmo desde cero?, PRESIONE 2", "Rojo");
 
             string selOpcion = Console.ReadLine();
 
             switch (selOpcion)
             {
                 case "1":
-                    return;
+                    Program.Main();
+                    break;
                 case "2":
-                    Model.resetVentas();
-                    Model.resetClientes();
+                    this.LogicVenta.reset();
+                    this.LogicCompraDelCliente.reset();
                     run();
                     break;
-                case "0":
-                    Environment.Exit(1);
-                    break;
                 default:
-                    Utlis.userError();
-                    noMostrarMontoFinal();
+                    Utilities.userError();
+                    preguntaQueHacer();
                     break;
             }
         }
 
-        private void printClientes()
+        private void imprimeMontoClientes()
         {
-            List<Cliente> clientes = Model.getClientes();
+            List<CompraCliente> compraClientesList = this.LogicCompraDelCliente.getCompras();
             int cliente = 0;
 
-            foreach (Cliente element in clientes)
+            foreach (CompraCliente element in compraClientesList)
             {
                 cliente += 1;
-                Console.WriteLine($"La compra total del cliente {cliente} es {element._MontoTotal}");
+                Console.WriteLine($"La compra total del cliente {cliente} es {element.MontoTotal}");
             }
 
-            Console.WriteLine($"En número de clientes atendidos es {clientes.Count}.");
+            Console.WriteLine($"En número de clientes atendidos es {compraClientesList.Count}.");
         }
     }
 }

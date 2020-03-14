@@ -1,6 +1,6 @@
 ﻿namespace app
 {
-    public interface program
+    public interface programInterface
     {
         void run();
     }

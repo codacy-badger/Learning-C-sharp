@@ -5,30 +5,10 @@
         private double valor;
         private float cantidad;
 
-        public double Valor
+        public Venta(double valor, float cantidad)
         {
-            get
-            {
-                return valor;
-            }
-
-            set
-            {
-                valor = value;
-            }
-        }        
-
-        public float Cantidad
-        {
-            get
-            {
-                return cantidad;
-            }
-
-            set
-            {
-                cantidad = value;
-            }
+            this.valor = valor;
+            this.cantidad = cantidad;
         }
 
         public double getTotal()

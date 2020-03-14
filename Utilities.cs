@@ -3,19 +3,19 @@ using System.Threading;
 
 namespace app
 {
-    internal class Utlis
+    static class Utilities
     {
-        public static void writeInColor(string text, string color)
+        public static void escribeEnColor(string text, string color)
         {
             switch (color)
             {
-                case "Red":
+                case "Rojo":
                     Console.ForegroundColor = ConsoleColor.Red;
                     break;
-                case "Blue":
+                case "Azul":
                     Console.ForegroundColor = ConsoleColor.DarkBlue;
                     break;
-                case "":
+                default:
                     Console.ForegroundColor = ConsoleColor.Black;
                     break;
             }
@@ -25,16 +25,16 @@ namespace app
             Console.ResetColor();
         }
 
-        public static void changeColorConsola()
+        public static void cambiarColorConsola()
         {
             string color = Console.ReadLine().ToLower();
             switch (color)
             {
-                case "black":
-                    Console.BackgroundColor = ConsoleColor.Black;
-                    break;
-                case "restart":
+                case "gris":
                     Console.BackgroundColor = ConsoleColor.DarkGray;
+                    break;
+                case "reiniciar":
+                    Console.BackgroundColor = ConsoleColor.Black;
                     break;
                 default:
                     userError();
@@ -46,8 +46,9 @@ namespace app
         public static void userError()
         {
             Console.ForegroundColor = ConsoleColor.Red;
-            writeInColor("¡ERROR la opción que ha selecionado no existe!", "Red");
+            escribeEnColor("¡ERROR la opción que ha selecionado no existe!", "Rojo");
             Thread.Sleep(1000);
+            Console.Clear();
         }
     }
 }
