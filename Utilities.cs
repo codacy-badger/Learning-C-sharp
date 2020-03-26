@@ -27,7 +27,7 @@ namespace app
 
         public static void cambiarColorConsola()
         {
-            string color = Console.ReadLine().ToLower();
+            string color = Console.ReadLine().ToLowerInvariant();
             switch (color)
             {
                 case "gris":

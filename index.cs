@@ -39,7 +39,7 @@ namespace app
                         Utilities.userError();
                         break;
                 }
-            };
+            }
         }
     }
 }
