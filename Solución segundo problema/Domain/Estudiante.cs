@@ -4,8 +4,18 @@ namespace app
 {
     class Estudiante
     {
+        private int _Id;
         private List<Materia> _Materias = new List<Materia>();
 
+        public Estudiante(int id)
+        {
+            this._Id = id;
+        }
+
+        public int Id
+        {
+            get => _Id;
+        }
         public List<Materia> Materias 
         {
             get => _Materias;
