@@ -22,5 +22,15 @@
             get => this._Notas;
             set => this._Notas = value;
         }
+
+        public float getPromedio()
+        {
+            float sumNotas = 0;
+            foreach (float nota in Notas)
+            {
+                sumNotas += nota;
+            }
+            return sumNotas / Notas.Length;
+        }
     }
 }
